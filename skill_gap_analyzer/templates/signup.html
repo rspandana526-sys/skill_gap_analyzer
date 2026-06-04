@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up – Skill Gap Analyzer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body{ min-height:100vh; display:flex; justify-content:center; align-items:center; background:linear-gradient(135deg,#0f2027,#203a43,#2c5364); color:white; padding:20px; }
+body::before{ content:""; position:fixed; width:400px; height:400px; background:#00c6ff; filter:blur(160px); top:-140px; left:-140px; opacity:0.45; pointer-events:none; }
+body::after{ content:""; position:fixed; width:400px; height:400px; background:#ff00cc; filter:blur(160px); bottom:-140px; right:-140px; opacity:0.45; pointer-events:none; }
+.card{ width:100%; max-width:420px; padding:44px 40px; border-radius:24px; background:rgba(255,255,255,0.07); backdrop-filter:blur(22px); box-shadow:0 28px 60px rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.1); z-index:1; }
+.card-header{ text-align:center; margin-bottom:30px; }
+.card-header .emoji{ font-size:38px; margin-bottom:10px; }
+.card-header h2{ font-size:24px; font-weight:700; }
+.card-header p{ font-size:13px; opacity:0.55; margin-top:5px; }
+form{ display:flex; flex-direction:column; gap:16px; }
+.field-group{ display:flex; flex-direction:column; gap:5px; }
+label{ font-size:11px; font-weight:600; opacity:0.75; letter-spacing:0.6px; text-transform:uppercase; }
+.input-wrap{ position:relative; }
+.input-wrap input{ width:100%; padding:13px 16px; border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; outline:none; background:rgba(255,255,255,0.1); color:white; font-size:14px; font-family:'Poppins',sans-serif; transition:border 0.2s, background 0.2s; }
+.input-wrap input::placeholder{ color:rgba(255,255,255,0.4); }
+.input-wrap input:focus{ border-color:#00c6ff; background:rgba(255,255,255,0.14); }
+.toggle-pw{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.5); font-size:18px; padding:0; line-height:1; transition:color 0.2s; }
+.toggle-pw:hover{ color:#00c6ff; }
+.btn{ margin-top:4px; padding:14px; border:none; border-radius:12px; background:linear-gradient(45deg,#00c6ff,#0072ff); color:white; font-weight:600; cursor:pointer; transition:transform 0.25s, box-shadow 0.25s; font-size:15px; box-shadow:0 4px 20px rgba(0,198,255,0.3); }
+.btn:hover{ transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,198,255,0.45); }
+.btn:active{ transform:translateY(0); }
+.error{ color:#ff6b6b; font-size:13px; background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.25); border-radius:8px; padding:10px; text-align:center; }
+.success{ color:#00ffaa; font-size:13px; background:rgba(0,255,170,0.08); border:1px solid rgba(0,255,170,0.25); border-radius:8px; padding:10px; text-align:center; }
+a{ color:#00e5ff; text-decoration:none; }
+a:hover{ text-decoration:underline; }
+.footer-link{ text-align:center; margin-top:20px; font-size:13px; opacity:0.8; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <div class="emoji">✨</div>
+    <h2>Create Account</h2>
+    <p>Pick a username and password — that's it!</p>
+  </div>
+
+  <form method="POST" action="/register">
+    <div class="field-group">
+      <label>Username</label>
+      <div class="input-wrap">
+        <input type="text" name="username" placeholder="Choose a username" required autofocus autocomplete="username">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input type="password" name="password" id="pw1" placeholder="Create a password" required autocomplete="new-password">
+        <button type="button" class="toggle-pw" onclick="togglePw('pw1',this)">👁️</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Confirm Password</label>
+      <div class="input-wrap">
+        <input type="password" name="confirm_password" id="pw2" placeholder="Repeat your password" required autocomplete="new-password">
+        <button type="button" class="toggle-pw" onclick="togglePw('pw2',this)">👁️</button>
+      </div>
+    </div>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    {% if success %}<p class="success">{{ success }}</p>{% endif %}
+
+    <button class="btn" type="submit">Create Account</button>
+  </form>
+
+  <div class="footer-link">Already have an account? <a href="/login">Login</a></div>
+</div>
+
+<script>
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+</script>
+</body>
+</html>

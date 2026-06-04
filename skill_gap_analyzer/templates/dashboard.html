@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+html, body { height:100%; }
+body { background:linear-gradient(135deg,#0f2027,#203a43,#2c5364); color:white; display:flex; }
+
+.sidebar { width:240px; min-width:240px; height:100vh; background:rgba(8,18,30,0.92); backdrop-filter:blur(20px); border-right:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; transition:width 0.3s ease; z-index:100; overflow:hidden; flex-shrink:0; }
+.sidebar.collapsed { width:64px; min-width:64px; }
+.sidebar-header { display:flex; align-items:center; padding:20px 14px; border-bottom:1px solid rgba(255,255,255,0.08); gap:10px; }
+.hamburger { background:none; border:none; color:white; cursor:pointer; padding:6px; border-radius:8px; display:flex; flex-direction:column; gap:5px; flex-shrink:0; }
+.hamburger:hover { background:rgba(255,255,255,0.1); }
+.hamburger span { display:block; width:20px; height:2px; background:white; border-radius:2px; }
+.sidebar-title { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; transition:opacity 0.2s; }
+.sidebar.collapsed .sidebar-title { opacity:0; width:0; }
+.sidebar-nav { flex:1; padding:14px 8px; display:flex; flex-direction:column; gap:3px; overflow-y:auto; }
+.nav-item { display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:12px; color:rgba(255,255,255,0.72); text-decoration:none; font-size:13.5px; font-weight:500; transition:all 0.2s; white-space:nowrap; overflow:hidden; }
+.nav-item:hover { background:rgba(255,255,255,0.1); color:white; }
+.nav-item.active { background:linear-gradient(90deg,rgba(0,198,255,0.2),rgba(0,114,255,0.15)); color:#00e5ff; border-left:3px solid #00c6ff; }
+.nav-icon { font-size:17px; flex-shrink:0; width:20px; text-align:center; }
+.nav-label { transition:opacity 0.2s; }
+.sidebar.collapsed .nav-label { opacity:0; width:0; overflow:hidden; }
+.sidebar-footer { padding:14px 8px; border-top:1px solid rgba(255,255,255,0.08); }
+.logout-btn { display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:12px; color:rgba(255,100,100,0.85); text-decoration:none; font-size:13.5px; font-weight:500; transition:all 0.2s; white-space:nowrap; }
+.logout-btn:hover { background:rgba(255,100,100,0.1); color:#ff6b6b; }
+
+.main { flex:1; height:100vh; overflow-y:auto; padding:32px 36px; }
+.container { max-width:940px; margin:0 auto; display:flex; flex-direction:column; gap:22px; padding-bottom:40px; }
+
+.card { background:rgba(255,255,255,0.07); backdrop-filter:blur(15px); border-radius:18px; padding:24px 26px; border:1px solid rgba(255,255,255,0.09); box-shadow:0 8px 28px rgba(0,0,0,0.35); }
+.card h3 { font-size:15.5px; font-weight:600; margin-bottom:12px; }
+
+.score-card { text-align:center; }
+.score-card h2 { font-size:19px; margin-bottom:4px; }
+.circle { width:150px; height:150px; border-radius:50%; background:conic-gradient(#00c6ff {{ score }}%, rgba(255,255,255,0.1) {{ score }}%); display:flex; align-items:center; justify-content:center; margin:16px auto; }
+.circle span { background:#0d1f2d; width:112px; height:112px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; }
+.suggestion { color:#00e5ff; font-weight:500; font-size:14px; }
+
+.row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.skill-list { list-style:none; margin-top:6px; }
+.skill-list li { padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:13.5px; }
+.skill-list li:last-child { border:none; }
+
+.top3-grid { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
+.role-card { flex:1; min-width:130px; border-radius:14px; padding:14px; text-align:center; }
+.role-card .rank { font-size:20px; }
+.role-card .role-name { font-size:12px; font-weight:600; margin:5px 0 3px; }
+.role-card .role-score { font-size:22px; font-weight:700; color:#00e5ff; }
+.role-card.gold { border:1px solid gold; background:rgba(255,215,0,0.07); }
+.role-card.silver { border:1px solid silver; background:rgba(192,192,192,0.07); }
+.role-card.bronze { border:1px solid #cd7f32; background:rgba(205,127,50,0.07); }
+.bar-wrap { background:rgba(255,255,255,0.1); border-radius:20px; height:7px; margin-top:8px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:20px; background:linear-gradient(90deg,#00c6ff,#0072ff); }
+
+.feedback-line { padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:13.5px; line-height:1.6; }
+.feedback-line:last-child { border:none; }
+
+.ai-actions { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+.ai-btn { display:flex; align-items:center; gap:8px; padding:11px 20px; border:none; border-radius:12px; font-family:'Poppins',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer; transition:all 0.25s; }
+.ai-btn.interview { background:linear-gradient(135deg,#7c3aed,#4f46e5); color:white; }
+.ai-btn.interview:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(124,58,237,0.4); }
+.ai-btn.coverletter { background:linear-gradient(135deg,#0891b2,#0e7490); color:white; }
+.ai-btn.coverletter:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(8,145,178,0.4); }
+.ai-btn:disabled { opacity:0.55; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+
+.output-section { margin-top:14px; }
+.output-label { font-size:13px; font-weight:600; margin-bottom:6px; }
+.output-box { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:16px 18px; font-size:13.5px; line-height:1.8; white-space:pre-wrap; word-break:break-word; max-height:380px; overflow-y:auto; }
+.output-box::-webkit-scrollbar { width:5px; }
+.output-box::-webkit-scrollbar-thumb { background:rgba(0,198,255,0.3); border-radius:4px; }
+.copy-row { display:flex; justify-content:flex-end; margin-top:10px; }
+.copy-btn { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:white; padding:6px 14px; border-radius:8px; font-size:12px; cursor:pointer; font-family:'Poppins',sans-serif; transition:0.2s; }
+.copy-btn:hover { background:rgba(255,255,255,0.15); }
+.spinner { display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.skill-check-list { list-style:none; }
+.skill-check-list li { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:13.5px; }
+.skill-check-list li:last-child { border:none; }
+.skill-check-list input[type=checkbox] { width:17px; height:17px; cursor:pointer; accent-color:#00c6ff; }
+.skill-check-list label { cursor:pointer; flex:1; }
+.skill-check-list label.done { text-decoration:line-through; opacity:0.45; }
+.save-btn { margin-top:14px; padding:9px 20px; border:none; border-radius:10px; background:linear-gradient(45deg,#00c6ff,#0072ff); color:white; font-weight:600; cursor:pointer; font-size:13px; transition:0.2s; }
+.save-btn:hover { transform:scale(1.04); }
+.saved-msg { font-size:12px; color:#00e5ff; margin-left:10px; display:none; }
+
+.roadmap-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:14px; flex-wrap:wrap; }
+.roadmap-item:last-child { border:none; }
+.roadmap-item a { color:#00e5ff; font-weight:500; text-decoration:none; }
+.roadmap-item a:hover { text-decoration:underline; }
+.roadmap-tag { font-size:11.5px; color:#aaa; }
+
+.main::-webkit-scrollbar { width:6px; }
+.main::-webkit-scrollbar-thumb { background:rgba(0,198,255,0.2); border-radius:4px; }
+
+@media(max-width:700px){
+  .row { grid-template-columns:1fr; }
+  .main { padding:18px 14px; }
+  .sidebar { width:64px; min-width:64px; }
+  .sidebar .nav-label,.sidebar .sidebar-title { opacity:0; width:0; overflow:hidden; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
+    <span class="sidebar-title">Skill Gap Analyzer</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/home"    class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/analyze" class="nav-item active"><span class="nav-icon">🔍</span><span class="nav-label">Analyze</span></a>
+    <a href="/chat"    class="nav-item"><span class="nav-icon">🤖</span><span class="nav-label">AI Chat</span></a>
+    <a href="/history" class="nav-item"><span class="nav-icon">📋</span><span class="nav-label">History</span></a>
+    <a href="/profile" class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-btn"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></a>
+  </div>
+</div>
+
+<div class="main">
+<div class="container">
+
+  <!-- SCORE -->
+  <div class="card score-card">
+    <h2>{{ role }} — Readiness Score</h2>
+    <div class="circle"><span>{{ score }}%</span></div>
+    <p class="suggestion">{{ suggestion }}</p>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="row">
+    <div class="card">
+      <h3>✔ Skills You Have</h3>
+      <ul class="skill-list">{% for skill in have %}<li>{{ skill | title }}</li>{% else %}<li style="opacity:0.5">No skills detected</li>{% endfor %}</ul>
+    </div>
+    <div class="card">
+      <h3>❌ Skills to Learn</h3>
+      <ul class="skill-list">{% for skill in missing %}<li>{{ skill | title }}</li>{% else %}<li style="color:#00e5ff">🎉 All required skills covered!</li>{% endfor %}</ul>
+    </div>
+  </div>
+
+  <!-- TOP 3 -->
+  {% if top3 %}
+  <div class="card">
+    <h3>🏆 Your Top 3 Role Matches</h3>
+    <p style="font-size:12px;opacity:0.6;margin-top:-8px;margin-bottom:4px;">Based on your current skill set.</p>
+    <div class="top3-grid">
+      {% for role_name, pct in top3 %}
+      <div class="role-card {% if loop.index == 1 %}gold{% elif loop.index == 2 %}silver{% else %}bronze{% endif %}">
+        <div class="rank">{% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% else %}🥉{% endif %}</div>
+        <div class="role-name">{{ role_name }}</div>
+        <div class="role-score">{{ pct }}%</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:{{ pct }}%;"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- RESUME FEEDBACK -->
+  {% if resume_feedback %}
+  <div class="card">
+    <h3>📄 AI Resume Feedback</h3>
+    <p style="font-size:12px;opacity:0.6;margin-top:-8px;margin-bottom:14px;">Here's what AI suggests to strengthen your resume:</p>
+    {% for line in resume_feedback.split('\n') %}
+      {% if line.strip() %}
+      <div class="feedback-line">{{ line.strip() }}</div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- AI CAREER TOOLS -->
+  <div class="card">
+    <h3>🚀 AI Career Tools</h3>
+    <p style="font-size:12px;opacity:0.6;margin-top:-8px;margin-bottom:16px;">Personalized for <strong>{{ role }}</strong> — click to generate instantly.</p>
+
+    <div class="ai-actions">
+      <button class="ai-btn interview" id="interviewBtn" onclick="generateInterview()">
+        🎤 <span id="interviewTxt">Mock Interview Questions</span>
+      </button>
+      <button class="ai-btn coverletter" id="coverBtn" onclick="generateCoverLetter()">
+        📝 <span id="coverTxt">Generate Cover Letter</span>
+      </button>
+    </div>
+
+    <div id="interviewOut" style="display:none" class="output-section">
+      <p class="output-label" style="color:#a78bfa;">🎤 Interview Questions for {{ role }}</p>
+      <div class="output-box" id="interviewBox"></div>
+      <div class="copy-row"><button class="copy-btn" onclick="copyText('interviewBox','Questions')">📋 Copy Questions</button></div>
+    </div>
+
+    <div id="coverOut" style="display:none" class="output-section">
+      <p class="output-label" style="color:#22d3ee;">📝 Cover Letter for {{ role }}</p>
+      <div class="output-box" id="coverBox"></div>
+      <div class="copy-row"><button class="copy-btn" onclick="copyText('coverBox','Letter')">📋 Copy Letter</button></div>
+    </div>
+  </div>
+
+  <!-- TRACK LEARNING -->
+  {% if missing %}
+  <div class="card">
+    <h3>✅ Track Your Learning Progress</h3>
+    <p style="font-size:12px;opacity:0.6;margin-top:-8px;margin-bottom:14px;">Check off skills as you learn — progress is saved to your account.</p>
+    <ul class="skill-check-list" id="learnList">
+    {% for skill in missing %}
+      <li>
+        <input type="checkbox" id="sk_{{ loop.index }}" value="{{ skill }}"
+          {% if skill in learned %}checked{% endif %}
+          onchange="updateLabel(this)">
+        <label for="sk_{{ loop.index }}" class="{% if skill in learned %}done{% endif %}">{{ skill | title }}</label>
+      </li>
+    {% endfor %}
+    </ul>
+    <button class="save-btn" onclick="saveProgress()">💾 Save Progress</button>
+    <span class="saved-msg" id="savedMsg">✅ Saved!</span>
+  </div>
+  {% endif %}
+
+  <!-- ROADMAP -->
+  <div class="card">
+    <h3>📌 Learning Roadmap</h3>
+    <p style="font-size:12px;opacity:0.6;margin-top:-8px;margin-bottom:14px;">{{ description }}</p>
+    {% for skill in missing %}
+      {% if skill in courses %}
+      <div class="roadmap-item">
+        🎯 <a href="{{ courses[skill] }}" target="_blank">{{ skill | title }}</a>
+        <span class="roadmap-tag">▶ Free YouTube Course</span>
+      </div>
+      {% else %}
+      <div class="roadmap-item">
+        🎯 <span style="font-weight:500">{{ skill | title }}</span>
+        <a href="https://www.youtube.com/results?search_query={{ skill | replace(' ', '+') }}+tutorial" target="_blank" class="roadmap-tag">▶ Search YouTube →</a>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="roadmap-item" style="color:#00e5ff;">🎉 You have all the required skills for this role!</div>
+    {% endfor %}
+  </div>
+
+</div>
+</div>
+
+<script>
+const ROLE = {{ role | tojson }};
+const HAVE_SKILLS = {{ have | tojson }};
+
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('collapsed'); }
+function updateLabel(cb){ cb.checked ? document.querySelector(`label[for="${cb.id}"]`).classList.add('done') : document.querySelector(`label[for="${cb.id}"]`).classList.remove('done'); }
+
+async function saveProgress(){
+  const checks = document.querySelectorAll('#learnList input[type=checkbox]');
+  const learned = Array.from(checks).filter(c=>c.checked).map(c=>c.value);
+  await fetch('/learned',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({skills:learned})});
+  const msg=document.getElementById('savedMsg'); msg.style.display='inline';
+  setTimeout(()=>msg.style.display='none',2500);
+}
+
+async function generateInterview(){
+  const btn=document.getElementById('interviewBtn'), txt=document.getElementById('interviewTxt');
+  const out=document.getElementById('interviewOut'), box=document.getElementById('interviewBox');
+  btn.disabled=true; txt.innerHTML='<span class="spinner"></span> Generating…';
+  out.style.display='block'; box.textContent='Generating interview questions…';
+  try {
+    const r=await fetch('/mock-interview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:ROLE})});
+    const d=await r.json();
+    box.textContent=d.questions||d.error||'Error.';
+  } catch(e){ box.textContent='Network error. Please try again.'; }
+  btn.disabled=false; txt.textContent='🎤 Mock Interview Questions';
+}
+
+async function generateCoverLetter(){
+  const btn=document.getElementById('coverBtn'), txt=document.getElementById('coverTxt');
+  const out=document.getElementById('coverOut'), box=document.getElementById('coverBox');
+  btn.disabled=true; txt.innerHTML='<span class="spinner"></span> Writing…';
+  out.style.display='block'; box.textContent='Writing your cover letter…';
+  try {
+    const r=await fetch('/cover-letter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:ROLE,skills:HAVE_SKILLS})});
+    const d=await r.json();
+    box.textContent=d.letter||d.error||'Error.';
+  } catch(e){ box.textContent='Network error. Please try again.'; }
+  btn.disabled=false; txt.textContent='📝 Generate Cover Letter';
+}
+
+function copyText(id, label){
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{
+    const btn=event.target; btn.textContent='✅ Copied!';
+    setTimeout(()=>btn.textContent=`📋 Copy ${label}`,1800);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Analysis History</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body{ background:linear-gradient(135deg,#0f2027,#203a43,#2c5364); min-height:100vh; color:white; display:flex; }
+body::before{ content:""; position:fixed; width:350px; height:350px; background:#00c6ff; filter:blur(140px); top:-120px; left:-120px; opacity:0.4; pointer-events:none; z-index:0; }
+body::after{ content:""; position:fixed; width:350px; height:350px; background:#ff00cc; filter:blur(140px); bottom:-120px; right:-120px; opacity:0.4; pointer-events:none; z-index:0; }
+
+.sidebar{ width:260px; min-width:260px; height:100vh; background:rgba(10,20,35,0.85); backdrop-filter:blur(20px); border-right:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; transition:width 0.3s ease; z-index:100; overflow:hidden; flex-shrink:0; }
+.sidebar.collapsed{ width:68px; min-width:68px; }
+.sidebar-header{ display:flex; align-items:center; padding:20px 16px; border-bottom:1px solid rgba(255,255,255,0.08); gap:12px; }
+.hamburger{ background:none; border:none; color:white; cursor:pointer; padding:6px; border-radius:8px; display:flex; flex-direction:column; gap:5px; flex-shrink:0; transition:background 0.2s; }
+.hamburger:hover{ background:rgba(255,255,255,0.1); }
+.hamburger span{ display:block; width:20px; height:2px; background:white; border-radius:2px; }
+.sidebar-title{ font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; opacity:1; transition:opacity 0.2s; }
+.sidebar.collapsed .sidebar-title{ opacity:0; width:0; }
+.sidebar-nav{ flex:1; padding:16px 10px; display:flex; flex-direction:column; gap:4px; }
+.nav-item{ display:flex; align-items:center; gap:14px; padding:12px 14px; border-radius:12px; color:rgba(255,255,255,0.75); text-decoration:none; font-size:14px; font-weight:500; transition:all 0.2s; white-space:nowrap; overflow:hidden; }
+.nav-item:hover{ background:rgba(255,255,255,0.1); color:white; }
+.nav-item.active{ background:linear-gradient(90deg,rgba(0,198,255,0.2),rgba(0,114,255,0.15)); color:#00e5ff; border-left:3px solid #00c6ff; }
+.nav-icon{ font-size:18px; flex-shrink:0; width:22px; text-align:center; }
+.nav-label{ transition:opacity 0.2s; }
+.sidebar.collapsed .nav-label{ opacity:0; width:0; overflow:hidden; }
+.sidebar-footer{ padding:16px 10px; border-top:1px solid rgba(255,255,255,0.08); }
+.logout-btn{ display:flex; align-items:center; gap:14px; padding:12px 14px; border-radius:12px; color:rgba(255,100,100,0.85); text-decoration:none; font-size:14px; font-weight:500; transition:all 0.2s; white-space:nowrap; overflow:hidden; }
+.logout-btn:hover{ background:rgba(255,100,100,0.1); color:#ff6b6b; }
+
+.main{ flex:1; overflow-y:auto; padding:40px; z-index:1; }
+.container{ max-width:900px; margin:auto; }
+.card{ background:rgba(255,255,255,0.08); backdrop-filter:blur(20px); border-radius:20px; padding:36px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+h2{ text-align:center; margin-bottom:20px; }
+table{ width:100%; border-collapse:collapse; margin-top:20px; }
+th{ background:rgba(255,255,255,0.1); padding:12px; text-align:left; }
+td{ padding:12px; border-bottom:1px solid rgba(255,255,255,0.1); }
+.progress{ background:#444; height:22px; border-radius:20px; overflow:hidden; }
+.progress-fill{ background:linear-gradient(90deg,#00c6ff,#0072ff); height:100%; color:white; text-align:center; font-size:12px; line-height:22px; }
+.delete-btn{ background:#e74c3c; color:white; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:13px; }
+.delete-btn:hover{ background:#c0392b; }
+.clear-btn{ display:block; width:160px; margin:0 auto 20px; text-align:center; padding:10px; background:#e74c3c; color:white; border-radius:10px; text-decoration:none; font-weight:600; }
+.chart-box{ background:rgba(255,255,255,0.05); border-radius:16px; padding:20px; margin-bottom:24px; }
+</style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <button class="hamburger" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="sidebar-title">Skill Gap Analyzer</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/home"     class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/analyze"  class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Analyze</span></a>
+    <a href="/chat"     class="nav-item"><span class="nav-icon">🤖</span><span class="nav-label">AI Chat</span></a>
+    <a href="/history"  class="nav-item active"><span class="nav-icon">📋</span><span class="nav-label">History</span></a>
+    <a href="/profile"  class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-btn"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></a>
+  </div>
+</div>
+
+<div class="main">
+<div class="container">
+<div class="card">
+  <h2>Analysis History</h2>
+  {% if history %}
+  <div class="chart-box">
+    <h3 style="margin-bottom:15px;">📈 Score Progress Over Time</h3>
+    <canvas id="progressChart" height="100"></canvas>
+  </div>
+  <a href="/clear" class="clear-btn">Clear All</a>
+  <table>
+    <tr><th>Role</th><th>Score</th><th>Action</th></tr>
+    {% for item in history %}
+    <tr>
+      <td>{{ item.role }}</td>
+      <td>
+        <div class="progress">
+          <div class="progress-fill" style="width:{{ item.score }}%;">{{ item.score }}%</div>
+        </div>
+      </td>
+      <td><a href="/delete/{{ loop.index0 }}" class="delete-btn">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p style="text-align:center;opacity:0.6;">No history yet. Run an analysis first!</p>
+  {% endif %}
+</div>
+</div>
+</div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+const allHistory = {{ history | tojson }};
+const filtered = allHistory.filter(i => i.date);
+if(filtered.length){
+  new Chart(document.getElementById("progressChart"),{
+    type:"line",
+    data:{ labels:filtered.map(i=>i.date), datasets:[{ label:"Score (%)", data:filtered.map(i=>i.score), borderColor:"#00c6ff", backgroundColor:"rgba(0,198,255,0.1)", pointBackgroundColor:"#00c6ff", pointRadius:6, tension:0.4, fill:true }]},
+    options:{ responsive:true, plugins:{ legend:{display:false}, tooltip:{ callbacks:{ title:items=>filtered[items[0].dataIndex].role, label:ctx=>` Score: ${ctx.parsed.y}%` }}}, scales:{ y:{ beginAtZero:true, max:100, ticks:{color:"white",callback:v=>v+"%"}, grid:{color:"rgba(255,255,255,0.1)"} }, x:{ ticks:{color:"white"}, grid:{color:"rgba(255,255,255,0.1)"} }}}
+  });
+}
+</script>
+</body>
+</html>

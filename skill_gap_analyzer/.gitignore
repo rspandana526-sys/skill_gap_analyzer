@@ -1,0 +1,23 @@
+# Secrets - never commit these
+.env
+
+# Database file (auto-created on first run)
+skillgap.db
+
+# Uploaded resumes
+uploads/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db

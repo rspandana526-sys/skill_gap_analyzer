@@ -1,0 +1,132 @@
+{
+    "blockchain developer": [
+        "solidity",
+        "smart contract development",
+        "ethereum",
+        "hyperledger",
+        "cryptographic algorithms",
+        "blockchain architecture",
+        "node.js",
+        "web3.js"
+    ],
+    "data scientist": [
+        "python",
+        "r",
+        "sql",
+        "machine learning",
+        "data visualization",
+        "statistics",
+        "data mining",
+        "deep learning"
+    ],
+    "frontend developer": [
+        "html",
+        "css",
+        "javascript",
+        "react",
+        "angular",
+        "vue.js",
+        "responsive web design",
+        "css preprocessors like sass or less"
+    ],
+    "backend developer": [
+        "programming languages such as java or python",
+        "database management systems like mysql or mongodb",
+        "api design and development using rest or graphql",
+        "server-side frameworks like express or django",
+        "version control systems like git",
+        "cloud platforms such as aws or azure",
+        "containerization using docker",
+        "testing frameworks like junit or pyunit"
+    ],
+    "full stack developer": [
+        "javascript",
+        "html/css",
+        "react",
+        "node.js",
+        "express",
+        "mysql",
+        "mongodb",
+        "git"
+    ],
+    "machine learning engineer": [
+        "python",
+        "tensorflow",
+        "pytorch",
+        "scikit-learn",
+        "keras",
+        "natural language processing",
+        "deep learning",
+        "data preprocessing"
+    ],
+    "ai engineer": [
+        "python",
+        "machine learning",
+        "deep learning",
+        "natural language processing",
+        "computer vision",
+        "tensorflow",
+        "pytorch",
+        "keras"
+    ],
+    "cloud engineer": [
+        "aws or azure or google cloud",
+        "containerization using docker",
+        "kubernetes",
+        "scripting languages like python or powershell",
+        "infrastructure as code using terraform or cloudformation",
+        "networking fundamentals",
+        "security and compliance",
+        "monitoring and logging tools like prometheus or splunk"
+    ],
+    "data analyst": [
+        "sql",
+        "excel",
+        "data visualization",
+        "python",
+        "statistics",
+        "machine learning",
+        "data mining",
+        "tableau"
+    ],
+    "web developer": [
+        "html",
+        "css",
+        "javascript",
+        "react",
+        "node.js",
+        "sql",
+        "git",
+        "bootstrap"
+    ],
+    "software engineer": [
+        "programming languages",
+        "data structures",
+        "algorithms",
+        "database management",
+        "cloud computing",
+        "version control",
+        "web development",
+        "operating systems"
+    ],
+    "ai developer": [
+        "python",
+        "machine learning",
+        "deep learning",
+        "natural language processing",
+        "computer vision",
+        "tensorflow",
+        "pytorch",
+        "keras"
+    ],
+    "devops engineer": [
+        "cloud computing",
+        "containerization",
+        "scripting",
+        "agile methodologies",
+        "ci/cd tools",
+        "infrastructure as code",
+        "monitoring and logging",
+        "automation"
+    ]
+}

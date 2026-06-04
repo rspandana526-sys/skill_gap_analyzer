@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Skill Gap Analyzer – Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body{ min-height:100vh; background:linear-gradient(135deg,#0f2027,#203a43,#2c5364); display:flex; justify-content:center; align-items:center; color:white; padding:20px; }
+body::before{ content:""; position:fixed; width:400px; height:400px; background:#00c6ff; filter:blur(160px); top:-140px; left:-140px; opacity:0.45; pointer-events:none; }
+body::after{ content:""; position:fixed; width:400px; height:400px; background:#ff00cc; filter:blur(160px); bottom:-140px; right:-140px; opacity:0.45; pointer-events:none; }
+.login-container{ display:flex; width:100%; max-width:880px; background:rgba(255,255,255,0.05); backdrop-filter:blur(24px); border-radius:24px; overflow:hidden; box-shadow:0 32px 64px rgba(0,0,0,0.55); z-index:1; border:1px solid rgba(255,255,255,0.1); }
+.login-left{ flex:1; padding:60px 50px; display:flex; flex-direction:column; justify-content:center; background:linear-gradient(145deg,#0072ff,#00c6ff); position:relative; overflow:hidden; }
+.login-left::before{ content:""; position:absolute; width:200px; height:200px; background:rgba(255,255,255,0.08); border-radius:50%; top:-60px; right:-60px; }
+.login-left::after{ content:""; position:absolute; width:150px; height:150px; background:rgba(255,255,255,0.06); border-radius:50%; bottom:-40px; left:-40px; }
+.login-left .logo{ font-size:30px; margin-bottom:8px; }
+.login-left h1{ font-size:28px; font-weight:700; margin-bottom:12px; line-height:1.25; }
+.login-left p{ opacity:0.88; line-height:1.75; font-size:14px; }
+.features{ margin-top:28px; display:flex; flex-direction:column; gap:12px; }
+.feature-item{ display:flex; align-items:center; gap:10px; font-size:13px; opacity:0.9; }
+.feature-item .icon{ width:28px; height:28px; background:rgba(255,255,255,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.login-card{ flex:1; padding:55px 50px; background:rgba(255,255,255,0.07); display:flex; flex-direction:column; justify-content:center; }
+.login-card h2{ margin-bottom:6px; font-size:24px; font-weight:700; }
+.login-card .subtitle{ font-size:13px; opacity:0.55; margin-bottom:28px; }
+form{ display:flex; flex-direction:column; gap:16px; }
+.field-group{ display:flex; flex-direction:column; gap:5px; }
+label{ font-size:11px; font-weight:600; opacity:0.75; letter-spacing:0.6px; text-transform:uppercase; }
+.input-wrap{ position:relative; }
+.input-wrap input{ width:100%; padding:13px 16px; border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; outline:none; background:rgba(255,255,255,0.1); color:white; font-size:14px; font-family:'Poppins',sans-serif; transition:border 0.2s, background 0.2s; }
+.input-wrap input::placeholder{ color:rgba(255,255,255,0.4); }
+.input-wrap input:focus{ border-color:#00c6ff; background:rgba(255,255,255,0.14); }
+.toggle-pw{ position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.5); font-size:18px; padding:0; line-height:1; transition:color 0.2s; }
+.toggle-pw:hover{ color:#00c6ff; }
+.remember{ display:flex; align-items:center; gap:8px; font-size:13px; opacity:0.8; }
+.remember input[type=checkbox]{ width:16px; height:16px; cursor:pointer; accent-color:#00c6ff; }
+.btn{ padding:14px; border:none; border-radius:12px; background:linear-gradient(45deg,#00c6ff,#0072ff); color:white; font-weight:600; cursor:pointer; transition:transform 0.25s, box-shadow 0.25s; font-size:15px; box-shadow:0 4px 20px rgba(0,198,255,0.3); }
+.btn:hover{ transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,198,255,0.45); }
+.btn:active{ transform:translateY(0); }
+.error{ color:#ff6b6b; text-align:center; font-size:13px; background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.25); border-radius:8px; padding:10px; }
+a{ color:#00e5ff; text-decoration:none; }
+a:hover{ text-decoration:underline; }
+.footer-text{ text-align:center; font-size:13px; opacity:0.7; margin-top:4px; }
+@media(max-width:620px){ .login-left{ display:none; } .login-card{ padding:40px 30px; } }
+</style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-left">
+    <div class="logo">🚀</div>
+    <h1>Skill Gap Analyzer</h1>
+    <p>AI-powered platform that analyzes your skills and builds a personalized roadmap to your dream tech career.</p>
+    <div class="features">
+      <div class="feature-item"><span class="icon">🎯</span> Identify skill gaps instantly</div>
+      <div class="feature-item"><span class="icon">🗺️</span> Personalized learning roadmaps</div>
+      <div class="feature-item"><span class="icon">📊</span> Track your progress over time</div>
+    </div>
+  </div>
+
+  <div class="login-card">
+    <h2>Welcome Back 👋</h2>
+    <p class="subtitle">Sign in with your username and password</p>
+
+    <form method="POST" action="/login" autocomplete="on">
+      <div class="field-group">
+        <label>Username</label>
+        <div class="input-wrap">
+          <input type="text" name="username" placeholder="Enter your username" required autofocus autocomplete="username">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <input type="password" name="password" id="loginPw" placeholder="Enter your password" required autocomplete="current-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('loginPw',this)">👁️</button>
+        </div>
+      </div>
+
+      <div class="remember">
+        <input type="checkbox" name="remember" id="remember">
+        <label for="remember" style="text-transform:none;letter-spacing:0;opacity:1;font-size:13px;">Remember me</label>
+      </div>
+
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+      <button class="btn" type="submit">Login</button>
+      <p class="footer-text">Don't have an account? <a href="/register">Sign Up</a></p>
+    </form>
+  </div>
+</div>
+
+<script>
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+</script>
+</body>
+</html>

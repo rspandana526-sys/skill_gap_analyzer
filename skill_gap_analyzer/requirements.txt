@@ -1,0 +1,9 @@
+flask
+groq
+pdfplumber
+python-docx
+pymysql
+spacy
+requests
+gunicorn
+python-dotenv
