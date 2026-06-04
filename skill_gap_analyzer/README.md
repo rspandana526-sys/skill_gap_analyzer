@@ -4,17 +4,17 @@ An AI-powered web app that analyzes your skills against job roles, identifies ga
 
 ---
 
-## Team Members
+## 👥 Team Members
 
-Ajmeera Mounika
-Naramamidi Dhaarni Sri
-Korlapati Maheswari
-Malavath Vaishnavi 
-Spandana Reddy
+- Ajmeera Mounika
+- Naramamidi Dhaarni Sri
+- Korlapati Maheswari
+- Malavath Vaishnavi
+- Spandana Reddy
 
-## Project Guide 
+## 🎓 Project Guide
 
-Ms S Lavanya Reddy
+- Ms S Lavanya Reddy
 
 ## ✨ Features
 
